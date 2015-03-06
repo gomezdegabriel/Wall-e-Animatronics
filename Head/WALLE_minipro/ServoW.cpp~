@@ -1,0 +1,39 @@
+#include <Arduino.h>
+#include "ServoW.h"
+f
+void _SERVOW:: init(char _pin, char _minAngle, char _maxAngle)
+{
+	char med;
+	this-> minAngle = _minAngle;
+	this-> maxAngle = _maxAngle;
+	this-> theServo.attach(_pin);
+	
+	med= (this->minAngle+this->maxAngle)/2;
+	moveTo(med);
+}
+
+void _SERVOW::  moveTo(char porcent)
+{
+	if(porcent < -100)
+		porcent=-100;
+	
+	if (porcent>100)
+		porcent=100;
+
+	this->pos=map(porcent, -100, 100, minAngle, maxAngle)
+	this->theServo.write(pos);
+
+}
+
+void _SERVOW::  moveTo(char porcent, int time)
+{
+	if(porcent < -100)
+		porcent=-100;
+	
+	if (porcent>100)
+		porcent=100;
+
+	this->pos=map(porcent, -100, 100, minAngle, maxAngle)
+	this->theServo.write(pos);
+
+}

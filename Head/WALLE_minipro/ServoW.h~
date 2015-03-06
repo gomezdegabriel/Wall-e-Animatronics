@@ -1,0 +1,19 @@
+#ifndef SERVOW_H
+#define SERVOW_H
+
+struct _SERVOW
+{
+
+	Servo theServo;
+	char pin;
+	char maxAngle;
+	char minAngle;
+	char pos;
+	
+	init(int pin, int _minAngle, int _maxAngle);
+	moveTo(char _pos);
+	
+};
+
+#endif
+

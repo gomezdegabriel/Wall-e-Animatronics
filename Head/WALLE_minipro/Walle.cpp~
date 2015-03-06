@@ -1,0 +1,11 @@
+#include <Arduino.h>
+#include "Walle.h"
+
+void delayW(int ms)
+{
+  unsigned long int time=millis();
+  
+  while(abs(millis()-time) <= ms)
+  {
+  }
+}

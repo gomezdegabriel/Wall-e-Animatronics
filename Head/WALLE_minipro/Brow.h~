@@ -1,0 +1,32 @@
+#ifndef BROW_H
+#define BROW_H
+
+#include "ServoW.h"
+
+struct _BROW
+{
+
+	_SERVOW servoI;
+	_SERVOW servoE;
+	
+	float x1Limit;
+	float y1Limit;
+	float x2Limit;
+	float y2Limit;
+
+	const float L1= 4.4;
+	const float L2= 2.5;
+	const float L3= 5.2;
+	const float L4= 2.5;
+	const float L5= 2.5;
+	const float L1i= 4.4;
+	const float L2e= 4.5;
+	
+	void init(char pinI, char minAngleI, char maxAngleI, char pinE, char minAngleE, char maxAngleE);
+	void setLimits(char x1, char y1, char x2, char y2);
+	void moveTo(char porcentI, char porcentE);
+	
+};
+
+#endif
+

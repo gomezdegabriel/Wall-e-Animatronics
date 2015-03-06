@@ -1,0 +1,164 @@
+#include <Arduino.h>
+#include "Brow.h"
+
+void init(char pinI, char minAngleI, char maxAngleI, char pinE, char minAngleE, char maxAngleE)
+{
+
+this->servoI.init(pinI, minAngleI, maxAngleI);
+this->servoE.init(pinE, minAngleE, maxAngleE);
+this->setLimits(5.4, 1.6, -1, -5);
+this->theta=90;
+}
++
+
+void setLimits(char x1, char y1, char x2, char y2)
+{
+
+this->x1Limit=x1;
+this->y1Limit=y1;
+this->x2Limit=x2;
+this->y2Limit=y2;
+}
+
+
+void moveTo(char porcentI, char porcentE, int time)
+{
+	if(porcentI < -100) {porcentI=-100;}
+	if(porcentI > 100)  {porcentI= 100;}
+	
+	if(porcentE < -100) {porcentE=-100;}
+	if(porcentE > 100)  {porcentE= 100;}
+
+	char newPosI= map(porcentI, -100, 100, this->servoI.minAngle, this-> servoI.maxAngle);
+	char newPosE= map(porcentE, -100, 100, this->servoE.minAngle, this-> servoE.maxAngle);
+
+	char posI= this->servoI.pos;
+	char posE= this->servoE.pos;
+
+	bool finI=false, finE=false;
+
+	char difI= posI-newPosI;
+	char difE= posE-newPosE;
+
+	float theta2 = posI + 90; 
+	float theta5 = posE + 90;
+	
+	// Calcularemos con radianes
+	theta2= theta2*PI/180;
+	theta5= theta5*PI/180;
+
+	float inc1, inc2;
+	float deg1=PI/180;
+
+	if (difI > 0) { inc1= - deg1;}
+	else if(difI < 0) { inc1= deg1;}	
+	else {inc1=0;}
+
+	if (difE > 0) {inc2= - deg1;}
+	else if(difE < 0) { inc2= deg1;}	
+	else {inc2=0;}
+
+	if (difE>difI)
+	{
+		// inc1=inc1;
+		inc2= inc2 * abs(difE/difI);
+	}
+	if (difE < difI)
+	{
+		inc2= inc2 * abs(difE/difI);
+	}
+
+	float x1, y1, x3, y3, x2, y2, theta3, theta1p, theta2p;
+	float x5, y5, x6, y6, A, B, C, k;
+	bool limit=false;
+
+	theta4=this->theta; // Aproximación inicial de theta4
+
+	while( !finI || !finE)
+	{
+		theta2= theta2 + inc1;
+		theta5= theta5 + inc2;
+   			
+		A= L1 + L2*cos(theta2) - L5*cos(theta5);
+    	B= L2*sin(theta2) - L5*sin(theta5);
+		C= -(L3^2-L4^2-A^2-B^2)/(-2*L4);
+
+		// Calculamos el valor de theta4 de forma iterativa
+		// Buscamos la solución en un intervalo cercano a la
+		// última solución
+		theta41=theta4-12;
+		theta42=theta4+12;
+		mitad= (theta41+theta42)/2;
+		
+		k=0;
+		while ( abs(error) > epsilon && k < 100)
+		{
+
+ 		J1 = A*cos(theta41) + B*sin(theta41) + C;
+        J2 = A*cos(theta42) + B*sin(theta42) + C;
+        J1s = A*cos(theta41+mitad) + B*sin(theta41+mitad) + C;
+        J2s = A*cos(theta42-mitad) + B*sin(theta42-mitad) + C;
+
+			if(J1s*J2<0)
+			{
+				theta41= theta41+mitad;
+		        theta4=theta41;
+		        mitad= (theta42-theta41)/2;
+			}
+			else if(J2s*J1<0)
+			{
+				theta42= theta42-mitad;
+		        theta4=theta42;
+		        mitad= (theta42-theta41)/2;
+			}
+			else{
+				mitad=mitad/2;
+			}
+ 		
+			error = A*cos(theta4) + B*sin(theta4) + C;
+			k++;
+		}
+
+		// Calculamos los puntos de giro de los eslabones
+		 x1= L1+L2*cos(theta2);
+		 y1= L2*sin(theta2);
+		
+		 x3= L5*cos(theta5);
+		 y3= L5*sin(theta5);
+		
+		 x2= x3 + L4*cos(theta4);
+		 y2= y3 + L4*sin(theta4);
+		
+		 theta3=atan( (y1-y2)/ (x1-x2));
+
+		// Calculamos los puntos clave de la estructura
+		 theta1p= theta3 -180 -83;
+		 x5= x1 + L1i*cos(theta1p);
+		 y5= y1 + L1i*sin(theta1p);
+		
+		 theta2p= theta3 -140;
+		 x6= x2 + L2e*cos(theta2p);
+		 y6= y2 + L2e*sin(theta2p);
+
+		
+		if ( y5 <= y5limit || x5 >= x5limit || y6 <= y6limit || x6 <= x6limit) 
+		{
+		    limit=true;
+		}
+
+		if (difI*difE < 0 && limit=true)
+		{
+			finE=true;
+			finI=true;
+		}
+
+		this.servoI.moveTo(theta2/deg1);
+		this.servoE.moveTo(theta5/deg1);
+		
+	}
+
+}
+
+
+
+

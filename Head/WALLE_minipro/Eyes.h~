@@ -1,0 +1,45 @@
+
+
+/* 
+*@brief Abre el ojo poco a poco
+*@param startBright brillo final del ojo
+*/void openEyeLazy(int startBright);
+
+/* 
+*@brief Cierra el ojo
+*@param time tiempo en cerrar cada una de las 4 partes del ojo
+*/
+void closeEye(int time);
+
+/* 
+*@brief Abre el ojo
+*@param time tiempo en abrir cada una de las 4 partes del ojo
+*@param startBright brillo final del ojo
+*/
+void openEye(int time, int startBright);
+
+/*
+*@brief Pestañea una vez
+*@param time tiempo del pestañeo dividido entre 8 aproximadamente
+*/
+void wink(int time);
+
+/*
+*@brief Apaga o enciendo el vector de 8 leds
+*@param light Vector con el estado deseado de cada led
+*/
+void setLight(boolean light[]);
+
+/*
+*@brief Cambia el brillo de forma gradual desde el brillo actual al deseado
+*@param time tiempo en realizar la transicin de un brillo a otro
+*/
+void setBright(int newBright, int time);
+
+/*
+*@brief Cambia el brillo de forma instantanea
+*/
+void setBright(int newBright);
+
+
+
